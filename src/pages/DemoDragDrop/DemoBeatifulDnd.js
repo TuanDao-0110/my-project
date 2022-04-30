@@ -3,7 +3,6 @@ import _ from 'lodash'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Droppable } from 'react-beautiful-dnd'
 import { Draggable } from 'react-beautiful-dnd'
-import { ConsoleSqlOutlined, TeamOutlined } from '@ant-design/icons'
 export default function DemoBeatifulDnd(props) {
     const [state, setState] = useState({
         "toDo": {
@@ -22,7 +21,7 @@ export default function DemoBeatifulDnd(props) {
                 }
             ]
         },
-        "inProgess": {
+        "inProcess": {
             id: 'inProcess',
             items: [
                 {
@@ -60,28 +59,37 @@ export default function DemoBeatifulDnd(props) {
 
     const handleDragEnd = (result) => {
         let { destination, source } = result
-        console.log('destination', destination, 'source', source)
-        let tempDragItem = source.droppableId;
-        let tempDropItem = destination.droppableId
-        console.log('tempDrag', tempDragItem)
-        console.log('tempDrop', tempDropItem)
+        let tempDragId = source.droppableId;
+        let tempDropId = destination.droppableId
         if (!destination) {
             return
         }
         if (destination.index === source.index && destination.droppableId === source.droppableId) {
             return
         }
-        let itemCopy = { ...state[source.droppableId].items[source.index] }
-        let index = state[source.droppableId].items.findIndex(item => item.id == itemCopy.id)
-        state[source.droppableId].items.splice(index, 1);
+        setState((prevState) => {
 
-        let dropDestionation = state[destination.droppableId].items
-        dropDestionation.splice(destination.index, 0, itemCopy)
-        setState(state)
+            let tempDragItem = { ...prevState[tempDragId].items[source.index] }
+            let tempDropItem = { ...prevState[tempDropId].items[destination.index] }
+            let indexTemp = prevState[tempDragId].items.findIndex(item => item.id === tempDragItem.id)
+            if (destination.droppableId === source.droppableId) {
+                prevState[tempDropId].items[destination.index] = tempDragItem
+                prevState[tempDragId].items[source.index] = tempDropItem
+                // prevState[tempDragId].items.splice(indexTemp, 0)
+                return { ...prevState }
+            }
+
+            if (destination.droppableId !== source.droppableId) {
+                prevState[tempDragId].items.splice(indexTemp, 1)
+                let indexTemp1 = prevState[tempDropId].items.findIndex(item => item.id === tempDropItem.id)
+                prevState[tempDropId].items.splice(indexTemp1, 0, tempDragItem)
+                return { ...prevState }
+            }
+        })
     }
     return (
         <div className='container'>
-            {console.log('state,', state)}
+            {/* {console.log('state,', state)} */}
             <h2 className='text-center display-4'>    Demo Drag</h2>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <div className='row'>

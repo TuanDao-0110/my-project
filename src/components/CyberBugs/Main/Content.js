@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { DragDropContext } from 'react-beautiful-dnd'
 import { useDispatch } from 'react-redux'
 import { GET_TASK_DETAIL_SAGA } from '../../../redux/saga/Constants/CyberBugs/Cyberbugs'
 const textPriority = (priority) => {
@@ -150,6 +151,7 @@ export default function Content(props) {
     }
 
     const renderCardTaskList = () => {
+
         return listTaskState?.map((taskDetail, indexListTask) => {
             return <div
                 key={indexListTask}
@@ -222,12 +224,15 @@ export default function Content(props) {
                     })}
                 </ul>
             </div>
+
         })
     }
     return (
         <div className="content" style={{ display: 'flex' }}>
+            <DragDropContext>
 
-            {renderCardTaskList()}
+                {renderCardTaskList()}
+            </DragDropContext>
         </div>
     )
 }
