@@ -6,12 +6,14 @@ import reportWebVitals from './reportWebVitals';
 import store from './redux/configStore'
 import { Provider } from 'react-redux'
 import 'antd/dist/antd.css';
+import { BrowserRouter } from 'react-router-dom';
 ReactDOM.render(
+  <BrowserRouter>
+    <Provider store={store}>
 
-  <Provider store={store}>
-
-    <App />
-  </Provider>
+      <App />
+    </Provider>
+  </BrowserRouter>
   ,
   document.getElementById('root')
 );

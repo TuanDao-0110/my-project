@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Input } from 'antd';
 import { UserOutlined, LockOutlined, FacebookOutlined, TwitterCircleFilled, FacebookFilled } from '@ant-design/icons'
 import { withFormik } from 'formik'
 import * as Yup from 'yup'
+import { connect } from 'react-redux'
+import { singIn_action } from '../../../redux/actions/CyberBugAction';
 function LoginCyberBugs(props) {
     const {
         values,
@@ -17,7 +19,7 @@ function LoginCyberBugs(props) {
     return (
         <form className='container' onSubmit={handleSubmit}>
             <div className='d-flex justify-content-center align-items-center' style={{ height: window.innerHeight, flexDirection: 'column' }}>
-                <h3 className='text-center'>{props.displayName}</h3>
+                <h3 className='text-center'>Login CyberBugs</h3>
                 <div>
                     <Input onChange={handleChange} name='email' size="large" placeholder="Email" prefix={<UserOutlined></UserOutlined>} />
                     <div className='error text-danger'>
@@ -25,9 +27,9 @@ function LoginCyberBugs(props) {
                     </div>
                 </div>
                 <div className='mt-2'>
-                    <Input type='password' onChange={handleChange} name='password' size="large" placeholder="Password" prefix={<LockOutlined />} />
+                    <Input type='passWord' onChange={handleChange} name='passWord' size="large" placeholder="PassWord" prefix={<LockOutlined />} />
                     <div className='error text-danger'>
-                        {errors.password}
+                        {errors.passWord}
                     </div>
                 </div>
 
@@ -47,7 +49,7 @@ function LoginCyberBugs(props) {
 
 
 const LoginCyberBugsWithFormik = withFormik({
-    mapPropsToValues: () => ({ email: '', password: '' }),
+    mapPropsToValues: () => ({ email: '', passWord: '' }),
 
 
     validationSchema: Yup.object().shape({
@@ -55,8 +57,10 @@ const LoginCyberBugsWithFormik = withFormik({
         password: Yup.string().min(6, 'password have min 6 charaters').max(32, 'password have max 32 characters')
     }),
 
-    handleSubmit: (values, { setSubmitting }) => {
-        console.log(values)
+    handleSubmit: (values, { props, setSubmitting }) => {
+        setSubmitting(true)
+        props.dispatch(singIn_action(values))
+
     },
 
     displayName: 'Login CyberBugs',
@@ -64,4 +68,4 @@ const LoginCyberBugsWithFormik = withFormik({
 })(LoginCyberBugs);
 
 
-export default LoginCyberBugsWithFormik
+export default connect()(LoginCyberBugsWithFormik)

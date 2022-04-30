@@ -7,8 +7,7 @@ const stateDefault = {
 export const ModalReducer = (state = stateDefault, action) => {
     switch (action.type) {
         case "OPEN_FORM": {
-            state.Component = action.Component;
-            return { ...state }
+            return { ...state, Component: action.Component }
         }
         default: return { ...state }
     }

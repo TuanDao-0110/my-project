@@ -1,5 +1,4 @@
 import { Route, Switch } from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import './App.css';
 import Home from './pages/Home/Home';
 import Contact from './pages/Contact/Contact';
@@ -19,19 +18,36 @@ import Modal from './HOC/Modal/Modal';
 import { HomeTemplate } from './templates/HomeTemplate/HomeTemplate';
 import { UserLoginTemplate } from './templates/HomeTemplate/UserLoginTemplate';
 import LoginCyberBugs from './pages/CyberBugs/LoginCyberBugs/LoginCyberBugs';
+import { Router } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { CyberBugsTemplate } from './templates/HomeTemplate/CyberBugTemplate';
+import IndexCyberBug from './redux/saga/CyberBugs/IndexCyberBug'
+import CreateProject from './pages/CyberBugs/CreateProject/CreateProject';
+import ProjectManagement from './pages/CyberBugs/ProjectManagement/ProjectManagement';
+import ModalCyberbug from './HOC/CyberBugHOC/ModalCyberbug';
+import DemoDragDrop from './pages/DemoDragDrop/DemoDragDrop';
+import DemoBeatifulDnd from './pages/DemoDragDrop/DemoBeatifulDnd'
 function App() {
-  return (
-    <BrowserRouter>
+  const history = useHistory()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch({
+      type: "ADD_HISTORY",
+      history
+    })
+  }, [])
 
+
+  return (
+    <>
+      <ModalCyberbug />
       <LoadingComponent></LoadingComponent>
       <Modal></Modal>
+
       <Switch>
-        {/* <Route exact path={'/home'} render={(propsRoute) => {
-          return <div>
-            <Header></Header>
-            <Home {...propsRoute}></Home>
-          </div>
-        }}></Route> */}
+
         <HomeTemplate path="/home" exact Component={Home}></HomeTemplate>
         <HomeTemplate exact path='/contact' Component={Contact}></HomeTemplate>
         <HomeTemplate exact path={'/about'} Component={About}></HomeTemplate>
@@ -44,10 +60,17 @@ function App() {
         <HomeTemplate exact path='/dotolistredux' Component={ToDoListRedux}></HomeTemplate>
         <HomeTemplate exact path='/dotolistSaga' Component={BaiTapToDoListSaGa}></HomeTemplate>
         <HomeTemplate exact path='/DemoHOCModal' Component={DemoHOCModal}></HomeTemplate>
+        <HomeTemplate exact path='/DemoDragDrop' Component={DemoDragDrop}></HomeTemplate>
+        <HomeTemplate exact path='/DemoBeatifulDnd' Component={DemoBeatifulDnd}></HomeTemplate>
 
-        <Route path="*" component={PageNotFound}></Route>
+        <CyberBugsTemplate exact path='/cyberbug' Component={IndexCyberBug}></CyberBugsTemplate>
+        <CyberBugsTemplate exact path='/createProject' Component={CreateProject}></CyberBugsTemplate>
+        <CyberBugsTemplate exact path='/projectmanage' Component={ProjectManagement}></CyberBugsTemplate>
+        <CyberBugsTemplate exact path='/projectdetail/:projectId' Component={IndexCyberBug}></CyberBugsTemplate>
+
+        <Router path="*" Component={PageNotFound}></Router>
       </Switch>
-    </BrowserRouter>
+    </>
   );
 }
 
