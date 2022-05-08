@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import parse from 'html-react-parser';
-import { CHANGE_TASK_MODAL, GET_ALL_STATUS_SAGA, GET_ALL_TASK_TYPE_SAGA, GET_PRIORITY_SAGA, GET_TASK_DETAIL_SAGA, UPDATAE_TASK_SAGA, UPDATE_TASK_STATUS_SAGA } from '../../redux/saga/Constants/CyberBugs/Cyberbugs';
+import { CHANGE_TASK_MODAL, DELETE_COMMENT_SAGA, GET_ALL_STATUS_SAGA, GET_ALL_TASK_TYPE_SAGA, GET_PRIORITY_SAGA, GET_TASK_COMMENT_SAGA, GET_TASK_DETAIL_SAGA, INSER_TASK_COMMENT_SAGA, UPDATAE_TASK_SAGA, UPDATE_COMMENT_SAGA, UPDATE_TASK_STATUS_SAGA } from '../../redux/saga/Constants/CyberBugs/Cyberbugs';
 import { type } from '@testing-library/user-event/dist/type';
 import { Editor } from '@tinymce/tinymce-react';
 import { Button, Select, } from 'antd';
@@ -10,7 +10,22 @@ const { Option } = Select;
 let newListUserAsign = []
 
 export default function InforModal({ projectId }) {
+
+    const editorRef = useRef(null);
+    const commentRef = useRef()
+    const commentIdRef = useRef()
+    const dispatch = useDispatch()
+    const [comment, setComment] = useState('')
+    const { projectDetail } = useSelector(state => state.ProjectReducer)
+    const { taskDetails } = useSelector(state => state.TaskReducer)
+    const { arrStastus } = useSelector(state => state.ProjectCyberBugReducer)
+    const { arrPriority } = useSelector(state => state.PriorityReducer)
+    const { arrTaskType } = useSelector(state => state.TypeReducer)
+    // const { commentContent } = useSelector(state => state.CommentReducer)
+    const [visibleEditor, setVisibleEditor] = useState(true)
+    const [visbleComment, setVisibleComment] = useState(true)
     useEffect(() => {
+        console.log('useeffect')
         dispatch({
             type: GET_ALL_STATUS_SAGA
         })
@@ -20,16 +35,11 @@ export default function InforModal({ projectId }) {
         dispatch({
             type: GET_ALL_TASK_TYPE_SAGA
         })
-
-    }, [])
-    const editorRef = useRef(null);
-    const dispatch = useDispatch()
-    const { projectDetail } = useSelector(state => state.ProjectReducer)
-    const { taskDetails } = useSelector(state => state.TaskReducer)
-    const { arrStastus } = useSelector(state => state.ProjectCyberBugReducer)
-    const { arrPriority } = useSelector(state => state.PriorityReducer)
-    const { arrTaskType } = useSelector(state => state.TypeReducer)
-    const [visibleEditor, setVisibleEditor] = useState(true)
+        dispatch({
+            type: GET_TASK_COMMENT_SAGA,
+            taskId: taskDetails.taskId
+        })
+    }, [taskDetails])
     console.log('taskDetails:', taskDetails)
     const [content, setContent] = useState()
     const log = () => {
@@ -38,6 +48,19 @@ export default function InforModal({ projectId }) {
             setContent(editorRef.current.getContent())
         }
     };
+    const handleSubmitComment = () => {
+
+
+        dispatch({
+            type: INSER_TASK_COMMENT_SAGA,
+            taskComment: {
+                taskId: taskDetails.taskId,
+                contentComment: comment
+            },
+            taskId: taskDetails.taskId
+        })
+        setComment('')
+    }
     // const obj = { oldKey: 'value' };
 
     // obj['newKey'] = obj['oldKey'];
@@ -125,6 +148,39 @@ export default function InforModal({ projectId }) {
             </div>
 
 
+    }
+    const handleDeleteComment = (commentId) => {
+        dispatch({
+            type: DELETE_COMMENT_SAGA,
+            commentId,
+            taskId: taskDetails.taskId
+        })
+    }
+    const renderComment = (comment, commentId) => {
+        if (commentId == commentIdRef.current) {
+            return visbleComment ? <p style={{ marginBottom: 5 }} >{comment} </p> :
+                <div className='input-comment'>
+
+                    <input type="text" defaultValue={comment} onChange={(e) => {
+                        commentRef.current = e.target.value
+                    }} />
+                    <span>
+
+                        <button className='btn btn-success' onClick={() => {
+                            dispatch({
+                                type: UPDATE_COMMENT_SAGA,
+                                taskId: taskDetails.taskId,
+                                newComment: commentRef.current,
+                                commentId
+                            })
+                            setVisibleComment(!visbleComment)
+                        }}>edited</button>
+                    </span>
+                </div>
+        }
+        else {
+            return <p style={{ marginBottom: 5 }} >{comment} </p>
+        }
     }
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -251,40 +307,44 @@ export default function InforModal({ projectId }) {
 
                                             </div>
                                             <div className="input-comment">
-                                                <input type="text" placeholder="Add a comment ..." />
-                                                <p>
+                                                <input type="text" placeholder="Add a comment ..." value={comment} onChange={(e) => {
+                                                    setComment(e.target.value)
+
+                                                }} />
+                                                <button className='btn btn-success mt-2' onClick={handleSubmitComment}>Comment</button>
+                                                {/* <p>
                                                     <span style={{ fontWeight: 500, color: 'gray' }}>Protip:</span>
                                                     <span>press
                                                         <span style={{ fontWeight: 'bold', background: '#ecedf0', color: '#b4bac6' }}>M</span>
                                                         to comment</span>
-                                                </p>
+                                                </p> */}
                                             </div>
                                         </div>
                                         <div className="lastest-comment">
-                                            <button className='btn btn-success' onClick={submitUpdateTask}>Submit Update Task</button>
                                             <div className="comment-item">
-                                                <div className="display-comment" style={{ display: 'flex' }}>
-                                                    <div className="avatar">
-                                                        <img src={require('../../assets/imgLoading/img/download (1).jfif')} alt />
+                                                {taskDetails.lstComment?.map((comment, index) => {
+                                                    return <div key={index} className="display-comment" style={{ display: 'flex' }}>
+                                                        <div className="avatar">
+                                                            <img src={comment.avatar} alt={comment.avatar} />
 
-                                                    </div>
-                                                    <div>
-                                                        <p style={{ marginBottom: 5 }}>
-                                                            Lord Gaben <span>a month ago</span>
-                                                        </p>
-                                                        <p style={{ marginBottom: 5 }}>
-                                                            Lorem ipsum dolor sit amet, consectetur
-                                                            adipisicing elit. Repellendus tempora ex
-                                                            voluptatum saepe ab officiis alias totam ad
-                                                            accusamus molestiae?
-                                                        </p>
+                                                        </div>
                                                         <div>
-                                                            <span style={{ color: '#929398' }}>Edit</span>
-                                                            •
-                                                            <span style={{ color: '#929398' }}>Delete</span>
+                                                            <p style={{ marginBottom: 5 }}>
+                                                                Lord Gaben <span>a month ago</span>
+                                                            </p>
+                                                            {renderComment(comment.commentContent, comment.id)}
+                                                            <div>
+                                                                <span style={{ color: '#929398', cursor: 'pointer' }} onClick={() => {
+                                                                    commentIdRef.current = comment.id
+                                                                    setVisibleComment(!visbleComment)
+                                                                }} >Edit</span>
+                                                                •
+                                                                <span style={{ color: '#929398', cursor: 'pointer' }} onClick={() => { handleDeleteComment(comment.id) }}>Delete</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                })}
+
                                             </div>
                                         </div>
                                     </div>

@@ -3,7 +3,7 @@ import { Prompt } from 'react-router-dom';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 
 export default function login(props) {
-    console.log(props)
+    console.log('props')
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [userLogin, setUserLogin] = useState({ userName: '', password: '', status: false });
     const handleChange = (event) => {

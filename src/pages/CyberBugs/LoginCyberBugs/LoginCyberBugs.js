@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 import { connect } from 'react-redux'
 import { singIn_action } from '../../../redux/actions/CyberBugAction';
 function LoginCyberBugs(props) {
+    console.log(props)
     const {
         values,
         touched,

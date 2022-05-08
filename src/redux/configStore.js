@@ -15,6 +15,7 @@ import { ProjectReducer } from './reducer/ProjectReducer'
 import { TypeReducer } from './reducer/TaskTypeReducer'
 import { PriorityReducer } from './reducer/PriorityReducer'
 import { TaskReducer } from './reducer/taskReducer'
+import { CommentReducer } from './reducer/CommentReducer'
 const middleWareSaga = createMiddleWareSaga();
 const rootReducer = combineReducers({
     // reducer anounce
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
     ProjectReducer,
     TypeReducer,
     PriorityReducer,
-    TaskReducer
+    TaskReducer,
+    CommentReducer,
 })
 
 

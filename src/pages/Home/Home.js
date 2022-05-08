@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { USER_LOGIN } from '../../ultilities/constants/settingSysterm'
 
-export default function Home() {
+export default function Home(props) {
+  console.log('home props', props)
   const userLogin = useSelector(state => state.UserLoginCyberBugsReducer)
   return (
     <div>Home

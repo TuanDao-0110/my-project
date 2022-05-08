@@ -140,5 +140,34 @@ export class baseService {
             data: newTaskDetails
         })
     }
+    getAllComment = (taskId) => {
+        return axios({
+            url: `${DOMAIN_CYBERBUG}Comment/getAll?taskId=${taskId}`,
+            method: "GET",
+        })
+    }
+    postInsertCommentBaseService = (taskComment) => {
+        console.log(taskComment)
+        return axios({
+            url: `${DOMAIN_CYBERBUG}Comment/insertComment`,
+            method: 'POST',
+            data : taskComment,
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem(TOKEN) },
+        })
+    }
+    putUpdateCommentBaservice = (CommentId, newComment) => {
+        return axios({
+            url: `${DOMAIN_CYBERBUG}Comment/updateComment?id=${CommentId}&contentComment=${newComment}`,
+            method: "put",
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem(TOKEN) },
+        })
+    }
+    deleteCommentBaseService = (commentId) => {
+        return axios({
+            url: `${DOMAIN_CYBERBUG}Comment/deleteComment?idComment=${commentId}`,
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem(TOKEN) },
+        })
+    }
 
 }
