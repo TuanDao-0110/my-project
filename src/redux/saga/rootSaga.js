@@ -42,7 +42,11 @@ export function* rootSaga() {
         ProjectDetails.theoDoiGetUserByProjectSaga(),
         TaskType.theoDoiGetTaskDetailSaga(),
         TaskType.theoDoiUpdateTaskSaga(),
-        TaskType.theoDoiUpdateNewTaskSaga()
+        TaskType.theoDoiUpdateNewTaskSaga(),
+        TaskType.theoDoiGetTaskCommentSaga(),
+        TaskType.theoDoiPostInsertCommentSaga(),
+        TaskType.theoDoiDeleteCommentSaga(),
+        TaskType.theDoiUpdateCommentSaga(),
     ])
 
 

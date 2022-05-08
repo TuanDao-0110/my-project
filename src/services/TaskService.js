@@ -19,6 +19,7 @@ class TaskService extends baseService {
     postUpdateTaskService(newTask) {
         return this.postUpdateTaskBaseService(newTask)
     }
+  
 }
 
 
